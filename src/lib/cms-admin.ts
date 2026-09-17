@@ -1,18 +1,9 @@
-function required(name: string) {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing environment variable: ${name}`);
-  return value;
-}
-
-const endpoint = () => `${required("NEXT_PUBLIC_SUPABASE_URL")}/functions/v1/cms-admin`;
+const ENDPOINT = "https://hjjqxxbzdmotaemvrqsi.supabase.co/functions/v1/cms-admin";
 
 export async function cmsJson(payload: unknown) {
-  const response = await fetch(endpoint(), {
+  const response = await fetch(ENDPOINT, {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-cms-token": required("CMS_ADMIN_TOKEN"),
-    },
+    headers: { "content-type": "application/json" },
     body: JSON.stringify(payload),
     cache: "no-store",
   });
@@ -20,10 +11,10 @@ export async function cmsJson(payload: unknown) {
   return { response, data };
 }
 
-export async function cmsUpload(form: FormData) {
-  const response = await fetch(endpoint(), {
+export async function cmsUpload(form: FormData, token: string) {
+  const response = await fetch(ENDPOINT, {
     method: "POST",
-    headers: { "x-cms-token": required("CMS_ADMIN_TOKEN") },
+    headers: { authorization: `Bearer ${token}` },
     body: form,
     cache: "no-store",
   });
