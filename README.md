@@ -9,7 +9,7 @@ Versão dinâmica do **Site da Consciência**, com ensaio filosófico público, 
 - Supabase Storage
 - Markdown para o corpo das reflexões
 - Sessão administrativa por cookie HTTP-only assinado
-- Deploy recomendado: Netlify
+- Deploy recomendado: Vercel
 
 ## Variáveis de ambiente
 
@@ -66,7 +66,7 @@ Categorias incluídas: Consciência, Avatar, Metacognição, Dimensões, Axiomas
 
 ## Rotas públicas
 
-- `/` — ensaio + destaques + últimas publicações
+- `/` — interface original do ensaio preservada + reflexões dinâmicas
 - `/reflexoes` — arquivo de textos publicados
 - `/reflexoes/[slug]` — leitura individual com metadados SEO e Open Graph
 
@@ -85,17 +85,9 @@ pnpm typecheck
 pnpm build
 ```
 
-## Netlify
+## Vercel
 
-Conecte o repositório ao Netlify e use:
-
-```text
-Build command: pnpm build
-Publish directory: .next
-Runtime: Next.js
-```
-
-Cadastre todas as variáveis de ambiente no Netlify. Depois de cada `git push origin main`, o Continuous Deployment do Netlify deve reconstruir e publicar o site automaticamente.
+Conecte o repositório `andrei7x/Teoria-da-realidade-observacional` à branch `main` e use o preset Next.js. Cada novo commit em `main` deve disparar um novo deployment.
 
 ## Segurança
 
@@ -109,3 +101,5 @@ Cadastre todas as variáveis de ambiente no Netlify. Depois de cada `git push or
 ## Observação epistemológica
 
 O projeto apresenta uma visão filosófica e cosmológica pessoal sobre consciência, avatar, metacognição e níveis observacionais da realidade. Não é apresentado como teoria física comprovada.
+
+<!-- deployment trigger: restore original interface -->
