@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
-import { isAdminSession } from "@/lib/auth";
+import { getAdminToken } from "@/lib/auth";
 import { cmsJson } from "@/lib/cms-admin";
 
 export async function GET() {
-  if (!(await isAdminSession())) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-  const { response, data } = await cmsJson({ action: "list" });
+  const token = await getAdminToken();
+  if (!token) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+  const { response, data } = await cmsJson({ action: "list", token });
   return NextResponse.json(data, { status: response.status });
 }
 
 export async function POST(request: Request) {
-  if (!(await isAdminSession())) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+  const token = await getAdminToken();
+  if (!token) return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   const post = await request.json();
-  const { response, data } = await cmsJson({ action: "create", post });
+  const { response, data } = await cmsJson({ action: "create", token, post });
   return NextResponse.json(data, { status: response.status });
 }
