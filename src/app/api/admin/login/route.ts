@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { adminCookieName, createSessionToken } from "@/lib/auth";
+import { adminCookieName } from "@/lib/auth";
+import { cmsJson } from "@/lib/cms-admin";
 
 export async function POST(request: Request) {
   const { email, password } = await request.json();
-  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) return NextResponse.json({ error: "Admin não configurado" }, { status: 500 });
-  if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) return NextResponse.json({ error: "Credenciais inválidas" }, { status: 401 });
+  const { response: upstream, data } = await cmsJson({ action: "login", email, password });
+  if (!upstream.ok || !data?.token) return NextResponse.json({ error: data?.error || "Credenciais inválidas" }, { status: upstream.status });
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(adminCookieName, createSessionToken(email), { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 60 * 60 * 12 });
+  response.cookies.set(adminCookieName, data.token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 60 * 60 * 12 });
   return response;
 }
