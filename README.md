@@ -102,4 +102,4 @@ Conecte o repositório `andrei7x/Teoria-da-realidade-observacional` à branch `m
 
 O projeto apresenta uma visão filosófica e cosmológica pessoal sobre consciência, avatar, metacognição e níveis observacionais da realidade. Não é apresentado como teoria física comprovada.
 
-<!-- deployment trigger: restore original interface -->
+<!-- deployment trigger: github reconnect 2026-09-17 -->
