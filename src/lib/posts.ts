@@ -1,6 +1,5 @@
-import { publicSupabase } from "@/lib/supabase";
+import { cmsJson } from "@/lib/cms-admin";
 
-export type PostStatus = "draft" | "published";
 export type Post = {
   id: string;
   title: string;
@@ -9,7 +8,7 @@ export type Post = {
   content: string;
   category: string;
   tags: string[];
-  status: PostStatus;
+  status: "draft" | "published";
   is_featured: boolean;
   cover_image: string | null;
   created_at: string;
@@ -17,26 +16,20 @@ export type Post = {
   published_at: string | null;
 };
 
-export const categories = ["Consciência", "Avatar", "Metacognição", "Dimensões", "Axiomas", "Despertar", "Hermetismo", "Simulação", "Reflexões", "Ensaios"];
-
-export function slugify(value: string) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
 export async function listPublished() {
-  const { data, error } = await publicSupabase().from("posts").select("*").eq("status", "published").order("published_at", { ascending: false, nullsFirst: false });
-  if (error) throw error;
+  const { response, data } = await cmsJson({ action: "published" });
+  if (!response.ok) throw new Error(data?.error || "Falha ao carregar publicações");
   return (data ?? []) as Post[];
 }
 
 export async function listFeatured() {
-  const { data, error } = await publicSupabase().from("posts").select("*").eq("status", "published").eq("is_featured", true).order("published_at", { ascending: false, nullsFirst: false }).limit(6);
-  if (error) throw error;
+  const { response, data } = await cmsJson({ action: "featured" });
+  if (!response.ok) throw new Error(data?.error || "Falha ao carregar destaques");
   return (data ?? []) as Post[];
 }
 
 export async function getPublishedBySlug(slug: string) {
-  const { data, error } = await publicSupabase().from("posts").select("*").eq("slug", slug).eq("status", "published").maybeSingle();
-  if (error) throw error;
-  return data as Post | null;
+  const { response, data } = await cmsJson({ action: "bySlug", slug });
+  if (!response.ok) throw new Error(data?.error || "Falha ao carregar reflexão");
+  return (data ?? null) as Post | null;
 }
